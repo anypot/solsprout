@@ -1,0 +1,15 @@
+[project]
+name = "solsprout"
+version = "0.1.0"
+description = "CLI tool to derive Solana addresses and private keys from a mnemonic"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+
+dependencies = ["bip-utils>=2.6.0", "pyyaml>=6.0", "base58>=2.1.1"]
+
+[project.scripts]
+solsprout = "derive_sol_key:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
