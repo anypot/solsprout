@@ -1,2 +1,2 @@
 scripts:
-  solsprout: derive_sol_key:main
+  solsprout: solsprout.cli:main

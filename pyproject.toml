@@ -9,7 +9,7 @@ license = { text = "MIT" }
 dependencies = ["bip-utils>=2.6.0", "pyyaml>=6.0", "base58>=2.1.1"]
 
 [project.scripts]
-solsprout = "derive_sol_key:main"
+solsprout = "solsprout.cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
