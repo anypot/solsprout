@@ -3,9 +3,8 @@ import base58
 from bip_utils import (
     Bip39SeedGenerator,
     Bip39MnemonicValidator,
-    Bip44,
-    Bip44Coins,
-    Bip44Changes,
+    Bip32Slip10Ed25519,
+    SolAddrEncoder,
 )
 
 
@@ -29,24 +28,22 @@ def derive_solana_keypair(
     address_index: int = 0,
 ) -> tuple[bytes, bytes]:
     seed_bytes = Bip39SeedGenerator(mnemonic).Generate(passphrase)
-    bip44_ctx = Bip44.FromSeed(seed_bytes, Bip44Coins.SOLANA)
+    bip32_ctx = Bip32Slip10Ed25519.FromSeed(seed_bytes)
 
-    account = (
-        bip44_ctx.Purpose()
-        .Coin()
-        .Account(account_index)
-        .Change(Bip44Changes.CHAIN_EXT)
-        .AddressIndex(address_index)
-    )
+    # Derivation path: m/44'/501'/account'/address' (Phantom/Solflare)
+    # derivation_path = f"m/44'/501'/{account_index}'/{address_index}'"
+    # Derivation path: m/44'/501'/account'' (Ledger Live)
+    derivation_path = f"m/44'/501'/{account_index}'"
+    derived_key = bip32_ctx.DerivePath(derivation_path)
 
-    private_key_bytes = account.PrivateKey().Raw().ToBytes()
-    public_key_bytes = account.PublicKey().RawCompressed().ToBytes()
+    private_key_bytes = derived_key.PrivateKey().Raw().ToBytes()
+    public_key_bytes = derived_key.PublicKey().RawCompressed().ToBytes()
 
     return public_key_bytes, private_key_bytes
 
 
 def encode_public_key(pub_bytes: bytes) -> str:
-    return base58.b58encode(pub_bytes).decode()
+    return SolAddrEncoder.EncodeKey(pub_bytes)
 
 
 def encode_private_key(priv_bytes: bytes) -> str:

@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# PyInstaller spec file
+solsprout.spec
+
 # Ignore wallet file
 wallet.yaml
 
